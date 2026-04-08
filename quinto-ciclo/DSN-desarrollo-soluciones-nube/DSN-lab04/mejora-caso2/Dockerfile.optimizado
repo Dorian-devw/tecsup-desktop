@@ -1,0 +1,32 @@
+# Dockerfile optimizado usando Alpine Linux
+FROM python:3.11-alpine
+
+# Directorio de trabajo
+WORKDIR /app
+
+# Instalar Chromium y dependencias necesarias para que corra en Alpine
+# Usamos el paquete de chromium del repositorio de Alpine en lugar del de Playwright
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    nodejs \
+    npm
+
+# Variables de entorno para que Playwright use el Chromium del sistema
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Copiar requerimientos e instalar
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar aplicación
+COPY scraper.py .
+COPY dnis.xlsx .
+
+# Comando de ejecución
+CMD ["python", "scraper.py"]

@@ -1,0 +1,36 @@
+# Dockerfile con construcción multi-etapa (Multi-stage)
+
+# ETAPA 1: Construcción/Preparación de dependencias
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+COPY requirements.txt .
+# Instalamos dependencias en un directorio local
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# ETAPA 2: Imagen Final de Ejecución
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copiamos solo las librerías instaladas desde la etapa de construcción
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Instalar dependencias mínimas de sistema para el navegador
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar browsers (usamos el comando de playwright)
+RUN playwright install --with-deps chromium
+
+# Copiar archivos necesarios
+COPY scraper.py .
+COPY dnis.xlsx .
+
+CMD ["python", "scraper.py"]
