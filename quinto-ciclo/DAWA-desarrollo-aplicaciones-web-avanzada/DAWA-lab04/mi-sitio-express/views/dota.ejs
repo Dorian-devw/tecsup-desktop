@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e3f2fd; 
+            padding: 20px;
+        }
+        .card {
+            background-color: #bbdefb; 
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .btn {
+            background-color: #90caf9;
+            color: #0d47a1;
+            margin: 10px;
+        }
+        .btn:hover { background-color: #64b5f6; }
+        .input-field { margin-bottom: 20px; }
+        .input-field label { color: #1565c0; }
+        .center-align { margin-top: 20px; }
+        .suggestion-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            background: #ffffff;
+            max-height: 210px;
+            overflow-y: auto;
+            display: none;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+        }
+        .suggestion-list li {
+            padding: 10px 14px;
+            cursor: pointer;
+            color: #0d47a1;
+        }
+        .suggestion-list li:hover {
+            background: #e3f2fd;
+        }
+        table { background-color: #e1f5fe; }
+        th, td { padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <h1 class="center-align">Héroes de Dota 2</h1>
+
+                        <h3>Agregar Nuevo Héroe</h3>
+                        <form action="/dota" method="POST">
+                            <div class="row" style="position: relative;">
+                                <div class="input-field col s12 m6" style="position: relative;">
+                                    <input type="text" id="nombre" name="nombre" autocomplete="off" required>
+                                    <label for="nombre">Nombre del Héroe</label>
+                                    <ul id="hero-suggestions" class="suggestion-list"></ul>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                    <select id="rol" name="rol" required>
+                                        <option value="" disabled selected>Elige un rol</option>
+                                        <option value="Carry">Carry</option>
+                                        <option value="Mid">Mid</option>
+                                        <option value="Offlane">Offlane</option>
+                                        <option value="Support">Support</option>
+                                        <option value="Jungle">Jungle</option>
+                                    </select>
+                                    <label for="rol">Rol</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 m6">
+                                    <select id="atributo" name="atributo" required>
+                                        <option value="" disabled selected>Elige un atributo</option>
+                                        <option value="Strength" data-icon="/strength.png">Fuerza</option>
+                                        <option value="Agility" data-icon="/agility.png">Agilidad</option>
+                                        <option value="Intelligence" data-icon="/intelligence.png">Inteligencia</option>
+                                        <option value="Universal" data-icon="/universal.png">Universal</option>
+                                    </select>
+                                    <label for="atributo">Atributo Principal</label>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                    <select id="dificultad" name="dificultad" required>
+                                        <option value="" disabled selected>Elige dificultad</option>
+                                        <option value="1">Fácil (1)</option>
+                                        <option value="2">Medio (2)</option>
+                                        <option value="3">Difícil (3)</option>
+                                    </select>
+                                    <label for="dificultad">Dificultad</label>
+                                </div>
+                            </div>
+                            <div class="input-field">
+                                <textarea id="descripcion" name="descripcion" class="materialize-textarea" required></textarea>
+                                <label for="descripcion">Descripción</label>
+                            </div>
+                            <div class="center-align">
+                                <button type="submit" class="btn waves-effect waves-light">Agregar Héroe</button>
+                            </div>
+                        </form>
+
+                        <h3>Lista de Héroes</h3>
+                        <% if (heroes.length > 0) { %>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Rol</th>
+                                        <th>Atributo</th>
+                                        <th>Dificultad</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% const iconMap = { Strength: 'strength', Agility: 'agility', Intelligence: 'intelligence', Universal: 'universal' }; %>
+                                    <% const heroIconUrl = (name) => {
+                                        if (!apiHeroes) return null;
+                                        const found = apiHeroes.find(h => h.nombre.toLowerCase() === name.toLowerCase());
+                                        return found ? found.icono : null;
+                                    }; %>
+                                    <% heroes.forEach(heroe => { %>
+                                        <% const heroIcon = heroIconUrl(heroe.nombre) || `/${iconMap[heroe.atributo] || 'universal'}.png`; %>
+                                        <tr>
+                                            <td style="display:flex; align-items:center; gap: 10px;">
+                                                <img src="<%= heroIcon %>" alt="Icono de <%= heroe.nombre %>" style="height: 36px; width: auto;" />
+                                                <span><%= heroe.nombre %></span>
+                                            </td>
+                                            <td><%= heroe.rol %></td>
+                                            <td style="display:flex; align-items:center; gap: 8px;">
+                                                <img src="/<%= iconMap[heroe.atributo] || 'universal' %>.png" alt="Icono de <%= heroe.atributo %>" style="height: 24px; width: auto;" />
+                                                <span><%= heroe.atributo %></span>
+                                            </td>
+                                            <td><%= heroe.dificultad %></td>
+                                            <td><%= heroe.descripcion %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } else { %>
+                            <p class="center-align">No hay héroes registrados aún.</p>
+                        <% } %>
+
+                       
+                        <div class="center-align" style="margin-top: 20px;">
+                            <a href="/" class="btn waves-effect waves-light">Volver al Inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Inicializar selects de Materialize
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+
+        const heroOptions = <%- JSON.stringify((apiHeroes || []).map(hero => ({ name: hero.nombre, icon: hero.icono }))) %>;
+        const staticHeroNames = [
+            "Luna",
+            "Lina",
+            "Lion",
+            "Legion Commander",
+            "Leshrac",
+            "Lifestealer",
+            "Lycan",
+            "Mirana",
+            "Dragon Knight",
+            "Drow Ranger",
+            "Phantom Assassin",
+            "Phantom Lancer",
+            "Pudge",
+            "Sniper",
+            "Storm Spirit",
+            "Sven",
+            "Tidehunter",
+            "Tiny",
+            "Treant Protector"
+        ];
+
+        const nombreInput = document.getElementById('nombre');
+        const suggestionList = document.getElementById('hero-suggestions');
+        const suggestionBox = document.querySelector('.input-field.col.s12.m6');
+
+        const renderSuggestions = (matches) => {
+            suggestionList.innerHTML = '';
+            if (!matches.length) {
+                suggestionList.style.display = 'none';
+                return;
+            }
+            matches.forEach((hero) => {
+                const item = document.createElement('li');
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="${hero.icon}" alt="${hero.name}" style="width: 28px; height: 28px; object-fit: contain;" />
+                        <span>${hero.name}</span>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    nombreInput.value = hero.name;
+                    suggestionList.style.display = 'none';
+                });
+                suggestionList.appendChild(item);
+            });
+            suggestionList.style.display = 'block';
+        };
+
+        const updateSuggestions = () => {
+            const value = nombreInput.value.trim().toLowerCase();
+            const source = heroOptions.length ? heroOptions : staticHeroNames.map((name) => ({ name, icon: '/universal.png' }));
+            if (!value) {
+                renderSuggestions(source.slice(0, 8));
+                return;
+            }
+            const filtered = source.filter((hero) =>
+                hero.name.toLowerCase().startsWith(value)
+            );
+            renderSuggestions(filtered.slice(0, 8));
+        };
+
+        nombreInput.addEventListener('input', updateSuggestions);
+        nombreInput.addEventListener('focus', updateSuggestions);
+
+        document.addEventListener('click', (event) => {
+            if (!suggestionBox.contains(event.target)) {
+                suggestionList.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

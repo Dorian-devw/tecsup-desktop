@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e3f2fd; /* Pastel blue background */
+            padding: 20px;
+        }
+        .card {
+            background-color: #bbdefb; /* Lighter blue for cards */
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .btn {
+            background-color: #90caf9;
+            color: #0d47a1;
+            margin: 10px;
+        }
+        .btn:hover { background-color: #64b5f6; }
+        .input-field { margin-bottom: 20px; }
+        .input-field label { color: #1565c0; }
+        .center-align { margin-top: 20px; }
+        table { background-color: #e1f5fe; }
+        th, td { padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <h1 class="center-align">Héroes de Dota 2</h1>
+
+                        <!-- Formulario para agregar héroe -->
+                        <h3>Agregar Nuevo Héroe</h3>
+                        <form action="/dota" method="POST">
+                            <div class="row">
+                                <div class="input-field col s12 m6">
+                                    <input type="text" id="nombre" name="nombre" required>
+                                    <label for="nombre">Nombre del Héroe</label>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                    <select id="rol" name="rol" required>
+                                        <option value="" disabled selected>Elige un rol</option>
+                                        <option value="Carry">Carry</option>
+                                        <option value="Mid">Mid</option>
+                                        <option value="Offlane">Offlane</option>
+                                        <option value="Support">Support</option>
+                                        <option value="Jungle">Jungle</option>
+                                    </select>
+                                    <label for="rol">Rol</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 m6">
+                                    <select id="atributo" name="atributo" required>
+                                        <option value="" disabled selected>Elige un atributo</option>
+                                        <option value="Strength" data-icon="/strength.png">Fuerza</option>
+                                        <option value="Agility" data-icon="/agility.png">Agilidad</option>
+                                        <option value="Intelligence" data-icon="/intelligence.png">Inteligencia</option>
+                                        <option value="Universal" data-icon="/universal.png">Universal</option>
+                                    </select>
+                                    <label for="atributo">Atributo Principal</label>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                    <select id="dificultad" name="dificultad" required>
+                                        <option value="" disabled selected>Elige dificultad</option>
+                                        <option value="1">Fácil (1)</option>
+                                        <option value="2">Medio (2)</option>
+                                        <option value="3">Difícil (3)</option>
+                                    </select>
+                                    <label for="dificultad">Dificultad</label>
+                                </div>
+                            </div>
+                            <div class="input-field">
+                                <textarea id="descripcion" name="descripcion" class="materialize-textarea" required></textarea>
+                                <label for="descripcion">Descripción</label>
+                            </div>
+                            <div class="center-align">
+                                <button type="submit" class="btn waves-effect waves-light">Agregar Héroe</button>
+                            </div>
+                        </form>
+
+                        <!-- Tabla de héroes -->
+                        <h3>Lista de Héroes</h3>
+                        <% if (heroes.length > 0) { %>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Icono</th>
+                                        <th>Nombre</th>
+                                        <th>Rol</th>
+                                        <th>Atributo</th>
+                                        <th>Dificultad</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% heroes.forEach(heroe => { %>
+                                        <% const iconPath = heroe.atributo.toLowerCase().replace('intelligence', 'intelligence').replace('universal', 'universal'); %>
+                                        <tr>
+                                            <td>
+                                                <img src="/<%= iconPath %>.png" alt="<%= heroe.atributo %>" style="height: 36px; width: auto;" />
+                                            </td>
+                                            <td><%= heroe.nombre %></td>
+                                            <td><%= heroe.rol %></td>
+                                            <td><%= heroe.atributo %></td>
+                                            <td><%= heroe.dificultad %></td>
+                                            <td><%= heroe.descripcion %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } else { %>
+                            <p class="center-align">No hay héroes registrados aún.</p>
+                        <% } %>
+
+                        <div class="center-align" style="margin-top: 20px;">
+                            <a href="/" class="btn waves-effect waves-light">Volver al Inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Inicializar selects de Materialize
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background-color: #fff3e0; 
+            padding: 20px;
+        }
+        .card { 
+            background-color: #ffcc80; 
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .btn { 
+            background-color: #ffe0b2; 
+            color: #e65100; 
+            margin: 10px;
+        }
+        .btn:hover { background-color: #ffcc02; }
+        .collection-item { 
+            background-color: #fff8e1; 
+            margin: 5px 0;
+        }
+        .center-align { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <h1 class="center-align">Panel de Administración</h1>
+                        <h2>Mensajes Recibidos</h2>
+                        <% if (messages.length > 0) { %>
+                            <ul class="collection">
+                                <% messages.forEach(message => { %>
+                                    <li class="collection-item">
+                                        <strong><%= message.name %></strong> (<%= message.email %>): <%= message.message %>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p class="center-align">No hay mensajes recibidos.</p>
+                        <% } %>
+                        <div class="center-align" style="margin-top: 20px;">
+                            <a href="/" class="btn waves-effect waves-light">Volver al Inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
