@@ -60,5 +60,12 @@ docker run --rm -v ${PWD}:/app/output lab04-onpe
 
 - **Curso:** Desarrollo de Soluciones en la Nube
 - **Laboratorio:** 04
-- **Alumno:** Dorian
+- **Alumno:** Frank Sinca Orozco
 - **Docker Hub:** [dorian778](https://hub.docker.com/u/dorian778)
+
+---
+
+## 📝 Conclusiones
+
+1. **Docker nos facilita la vida**: Con este laboratorio me di cuenta de lo útil que es Docker para no estar sufriendo con las instalaciones de librerías o versiones de Python. Una vez que tienes la imagen lista, el proyecto corre igual en cualquier lado sin errores de "en mi compu sí funcionaba".
+2. **Automatizar ahorra mucho tiempo**: Crear el script para consultar DNIs automáticamente me enseñó que tareas que antes nos tomaban horas haciendo clic uno por uno en la web, ahora se pueden resolver en minutos. Además, el manejo de errores ayuda mucho cuando la página de la ONPE se pone lenta o se cae.
