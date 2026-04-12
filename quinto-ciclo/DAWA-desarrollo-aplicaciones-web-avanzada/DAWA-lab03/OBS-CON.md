@@ -1,0 +1,18 @@
+# Observaciones y Conclusiones - Laboratorio 03
+
+## Observaciones
+1. **El lío con `writable.end()`**: Al principio me salía un error raro (`ERR_STREAM_WRITE_AFTER_END`). Me di cuenta de que si cierras la "tubería" de escritura antes de tiempo, Node se enoja porque todavía quería mandar datos. Hay que tener cuidado con el orden de las cosas.
+2. **Entendiendo la Contrapresión**: No sabía que se llamaba "Backpressure", pero tiene sentido. Es como si quisieras meter mucha agua por un embudo pequeño; si no frenas un poco la entrada, se desborda todo (en este caso, la memoria RAM).
+3. **Servidor HTTP "a mano"**: Hacer las rutas con `if (req.url === ...)` se siente un poco primitivo comparado con otros frameworks, pero te ayuda a entender cómo funcionan las peticiones web desde la base.
+4. **Me volví loco con los headers del Excel**: Al principio, cuando entraba a `/reporte`, el navegador me mostraba un montón de símbolos extraños y letras sin sentido en toda la pantalla. Pensé que el código estaba mal, pero solo era que me faltaba configurar bien las cabeceras para avisarle al navegador que eso era un archivo descargable y no texto.
+5. **El Transform Stream parece magia**: Lo que noté es que crear un Transform Stream es como poner un filtro en medio de dos mangueras. Al principio no entendía por qué usábamos `chunk.toString()`, pero luego comprendí que los datos vienen como "bloques" (buffers) y hay que convertirlos a texto normal para poder pasarlos a mayúsculas.
+6. **Muchos archivos en `node_modules`**: Me sorprendió que para una tarea "simple" como generar un Excel, al hacer el `npm install` se bajaron como 90 paquetes más. Es impactante ver cómo Node.js maneja tantas dependencias que ni sabemos que están ahí ayudando.
+7. **El pequeño detalle del `commit()`**: Descubrí que en el streaming de Excel no solo es añadir filas y ya. Si te olvidas del `.commit()` en cada fila, el programa sigue guardando todo en RAM y pierdes la ventaja de los streams. Es un detalle chiquito pero muy importante.
+8. **Mejor separar por carpetas**: Al principio tenía un desorden de archivos en la raíz. Al crear la carpeta `actividad-2`, me di cuenta de que es mucho más fácil trabajar así, porque cada actividad tiene sus propias dependencias y sus propios errores sin mezclar todo.
+
+## Conclusiones
+1. **Los Streams son como tuberías**: Mi opinión es que los streams son mejores porque no tienes que cargar archivos pesados de golpe. Es como beber agua de un filtro en lugar de intentar tragarte toda la botella de un solo golpe; mucho más eficiente y seguro para la computadora.
+2. **Dudas resueltas con la práctica**: Tenía dudas de para qué servía el `pipe()`, pero al hacer la Actividad 1 y ver cómo el texto pasaba de un archivo a un transformador y luego a otro archivo, me quedó clarísimo: es solo conectar entrada con salida.
+3. **Menos es más**: Aunque instalar `exceljs` añade peso al proyecto, la forma en que exporta datos directamente al servidor en "streaming" me pareció genial. Resolví los problemas de formato leyendo un poco la documentación y probando los ejemplos del lab.
+4. **Crítica constructiva**: Creo que manejar archivos de esta forma es lo que diferencia a un programador que sabe de uno que recién empieza. Si usas `fs.readFile` para todo, tu servidor se va a morir cuando el archivo sea muy grande. Los streams son el camino correcto.
+5. **Control total con eventos**: Lo que más me gustó fue usar `.on('finish')` o `.on('end')`. Te da esa sensación de que tienes el control total de lo que está pasando en cada paso del proceso, y como estudiante, eso te da mucha confianza.

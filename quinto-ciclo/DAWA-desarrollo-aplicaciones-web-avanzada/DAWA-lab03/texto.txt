@@ -1,0 +1,4 @@
+Este es un archivo de prueba para la actividad 1.
+Los streams de Node.js son muy potentes para procesar datos.
+Estamos convirtiendo este texto a mayúsculas usando un Transform Stream.
+FUNCIONAAAANDO
