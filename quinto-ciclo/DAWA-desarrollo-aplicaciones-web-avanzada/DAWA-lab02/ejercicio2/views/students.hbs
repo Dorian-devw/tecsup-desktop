@@ -1,0 +1,19 @@
+<h1>Lista de estudiantes</h1>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Nombre</th>
+    <th>Nota</th>
+  </tr>
+  {{#each students}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>
+        {{#if (gt this.grade 15)}}
+          <strong style="color:green">{{this.grade}}</strong>
+        {{else}}
+          {{this.grade}}
+        {{/if}}
+      </td>
+    </tr>
+  {{/each}}
+</table>
